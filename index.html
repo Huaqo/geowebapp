@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask One Page App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        
+        h1 {
+            color: #333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Hochschulen Bevölkerung Data</h1>
+    <details>
+        <summary>Hochschulen Bevölkerung Data</summary>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Hochschulkurzname</th>
+                    <th>Hochschulname</th>
+                    <th>Hochschultyp</th>
+                    <th>Trägerschaft</th>
+                    <th>Bundesland</th>
+                    <th>Anzahl Studierende</th>
+                    <th>Gründungsjahr</th>
+                    <th>Promotionsrecht</th>
+                    <th>Habilitationsrecht</th>
+                    <th>Strasse</th>
+                    <th>Postleitzahl</th>
+                    <th>Ort</th>
+                    <th>Home Page</th>
+                    <th>Total Population</th>
+                    <th>Male Population</th>
+                    <th>Female Population</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hochschule in hochschulen_bevoelkerung %}
+                <tr>
+                    <td>{{ hochschule.hochschulkurzname }}</td>
+                    <td>{{ hochschule.hochschulname }}</td>
+                    <td>{{ hochschule.hochschultyp }}</td>
+                    <td>{{ hochschule.traegerschaft }}</td>
+                    <td>{{ hochschule.bundesland }}</td>
+                    <td>{{ hochschule.anzahl_studierende }}</td>
+                    <td>{{ hochschule.gruendungsjahr }}</td>
+                    <td>{{ hochschule.promotionsrecht }}</td>
+                    <td>{{ hochschule.habilitationsrecht }}</td>
+                    <td>{{ hochschule.strasse }}</td>
+                    <td>{{ hochschule.postleitzahl_hausanschrift }}</td>
+                    <td>{{ hochschule.ort_hausanschrift }}</td>
+                    <td>{{ hochschule.home_page }}</td>
+                    <td>{{ hochschule.total_population }}</td>
+                    <td>{{ hochschule.male_population }}</td>
+                    <td>{{ hochschule.female_population }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    
+    <h1>Bevölkerung Data</h1>
+    <details>
+        <summary>Bevölkerung Data</summary>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Region Code</th>
+                    <th>Region Name</th>
+                    <th>Total Population</th>
+                    <th>Male Population</th>
+                    <th>Female Population</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bevoelk in bevoelkerung %}
+                <tr>
+                    <td>{{ bevoelk.region_code }}</td>
+                    <td>{{ bevoelk.region_name }}</td>
+                    <td>{{ bevoelk.total_population }}</td>
+                    <td>{{ bevoelk.male_population }}</td>
+                    <td>{{ bevoelk.female_population }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+
+    <h1>Hochschulen Data</h1>
+    <details>
+        <summary>Hochschulen Data</summary>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Hochschulkurzname</th>
+                    <th>Hochschulname</th>
+                    <th>Hochschultyp</th>
+                    <th>Trägerschaft</th>
+                    <th>Bundesland</th>
+                    <th>Anzahl Studierende</th>
+                    <th>Gründungsjahr</th>
+                    <th>Promotionsrecht</th>
+                    <th>Habilitationsrecht</th>
+                    <th>Strasse</th>
+                    <th>Postleitzahl</th>
+                    <th>Ort</th>
+                    <th>Home Page</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hochschule in hochschulen %}
+                <tr>
+                    <td>{{ hochschule.hochschulkurzname }}</td>
+                    <td>{{ hochschule.hochschulname }}</td>
+                    <td>{{ hochschule.hochschultyp }}</td>
+                    <td>{{ hochschule.traegerschaft }}</td>
+                    <td>{{ hochschule.bundesland }}</td>
+                    <td>{{ hochschule.anzahl_studierende }}</td>
+                    <td>{{ hochschule.gruendungsjahr }}</td>
+                    <td>{{ hochschule.promotionsrecht }}</td>
+                    <td>{{ hochschule.habilitationsrecht }}</td>
+                    <td>{{ hochschule.strasse }}</td>
+                    <td>{{ hochschule.postleitzahl_hausanschrift }}</td>
+                    <td>{{ hochschule.ort_hausanschrift }}</td>
+                    <td>{{ hochschule.home_page }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+</body>
+</html>
