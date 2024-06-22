@@ -82,10 +82,16 @@ python app.py
 \l
 ```
 
+## Create your database
+
+```sql
+CREATE DATABASE geowebapp;
+```
+
 ## Switch database
 
 ```sql
-\c
+\c geowebapp
 ```
 
 ## Delete database
