@@ -7,74 +7,117 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
             background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
         }
-        
         h1 {
             color: #333;
+            margin-bottom: 20px;
         }
-        
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="number"] {
+            appearance: none;
+        }
         table {
             width: 100%;
+            max-width: 800px;
             border-collapse: collapse;
             margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
         }
-        
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
-        }
-        
-        th {
-            background-color: #f2f2f2;
+            padding: 12px;
             text-align: left;
         }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        /* Remove up and down numbers from input */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
     </style>
+    <script>
+        function submitForm() {
+            document.getElementById('orderForm').submit();
+        }
+    </script>
 </head>
 <body>
-    <h1>Hochschulen Data</h1>
-    <details>
-        <summary>Hochschulen Data</summary>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Hochschulkurzname</th>
-                    <th>Hochschulname</th>
-                    <th>Hochschultyp</th>
-                    <th>Trägerschaft</th>
-                    <th>Bundesland</th>
-                    <th>Anzahl Studierende</th>
-                    <th>Gründungsjahr</th>
-                    <th>Promotionsrecht</th>
-                    <th>Habilitationsrecht</th>
-                    <th>Strasse</th>
-                    <th>Postleitzahl</th>
-                    <th>Ort</th>
-                    <th>Home Page</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for hochschule in hochschulen %}
-                <tr>
-                    <td>{{ hochschule.hochschulkurzname }}</td>
-                    <td>{{ hochschule.hochschulname }}</td>
-                    <td>{{ hochschule.hochschultyp }}</td>
-                    <td>{{ hochschule.traegerschaft }}</td>
-                    <td>{{ hochschule.bundesland }}</td>
-                    <td>{{ hochschule.anzahl_studierende }}</td>
-                    <td>{{ hochschule.gruendungsjahr }}</td>
-                    <td>{{ hochschule.promotionsrecht }}</td>
-                    <td>{{ hochschule.habilitationsrecht }}</td>
-                    <td>{{ hochschule.strasse }}</td>
-                    <td>{{ hochschule.postleitzahl_hausanschrift }}</td>
-                    <td>{{ hochschule.ort_hausanschrift }}</td>
-                    <td>{{ hochschule.home_page }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </details>
+    <h1>Hochschulen in Deutschland</h1>
+
+    <form id="orderForm" method="get" action="/">
+        
+        <label for="order">Sortieren:</label>
+        <select name="order" id="order" onchange="submitForm()">
+            <option value="ASC" {% if order == 'ASC' %}selected{% endif %}>Gründungsjahr aufsteigend</option>
+            <option value="DESC" {% if order == 'DESC' %}selected{% endif %}> Gründungsjahr absteigend</option>
+        </select>
+
+        <label for="limit">Limitieren:</label>
+        <input type="number" name="limit" id="limit" value="{{ limit }}" min="1" onchange="submitForm()">        
+
+        <label>Felder:</label><br>
+        <input type="hidden" name="attributes" value="">
+        <input type="checkbox" name="attributes" value="name_h" {% if 'name_h' in attributes %}checked{% endif %} onchange="submitForm()"> Hochschulname<br>
+        <input type="checkbox" name="attributes" value="gjahr" {% if 'gjahr' in attributes %}checked{% endif %} onchange="submitForm()"> Gründungsjahr<br>
+        <input type="checkbox" name="attributes" value="typ" {% if 'typ' in attributes %}checked{% endif %} onchange="submitForm()"> Typ<br>
+        <input type="checkbox" name="attributes" value="traeger" {% if 'traeger' in attributes %}checked{% endif %} onchange="submitForm()"> Träger<br>
+        <input type="checkbox" name="attributes" value="land" {% if 'land' in attributes %}checked{% endif %} onchange="submitForm()"> Land<br>
+        <input type="checkbox" name="attributes" value="studenten" {% if 'studenten' in attributes %}checked{% endif %} onchange="submitForm()"> Studenten<br>
+        <input type="checkbox" name="attributes" value="precht" {% if 'precht' in attributes %}checked{% endif %} onchange="submitForm()"> Precht<br>
+        <input type="checkbox" name="attributes" value="hrecht" {% if 'hrecht' in attributes %}checked{% endif %} onchange="submitForm()"> Hrecht<br>
+        <input type="checkbox" name="attributes" value="str" {% if 'str' in attributes %}checked{% endif %} onchange="submitForm()"> Straße<br>
+        <input type="checkbox" name="attributes" value="plz" {% if 'plz' in attributes %}checked{% endif %} onchange="submitForm()"> PLZ<br>
+        <input type="checkbox" name="attributes" value="ort" {% if 'ort' in attributes %}checked{% endif %} onchange="submitForm()"> Ort<br>
+        <input type="checkbox" name="attributes" value="web" {% if 'web' in attributes %}checked{% endif %} onchange="submitForm()"> Web<br>
+
+    </form>
+
+    <!-- <img src="{{ url_for('gjahr_plot_route') }}" alt="Hochschulen Plot"> -->
+    
+    {{ table | safe }}
 </body>
 </html>

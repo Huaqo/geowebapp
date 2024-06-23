@@ -1,10 +1,10 @@
 -- Create a staging table for loading CSV data
-CREATE TABLE Staging_Bevoelkerung (
-    region_code INTEGER,
-    region_name VARCHAR(100),
-    total_population INTEGER,
-    male_population INTEGER,
-    female_population INTEGER
+CREATE TABLE Bevoelkerung (
+    id INTEGER,
+    name_bev VARCHAR(100),
+    total INTEGER,
+    total_w INTEGER,
+    total_m INTEGER
 );
 
 -- Create the regions_population table
@@ -48,20 +48,17 @@ CREATE TABLE Stadt (
 
 -- Create the Hochschulen table
 CREATE TABLE Hochschulen (
-    Hochschulkurzname VARCHAR(50),
-    Hochschulname VARCHAR(255) PRIMARY KEY,
-    Hochschultyp VARCHAR(100),
-    Traegerschaft VARCHAR(100),
-    Bundesland VARCHAR(50),
-    Anzahl_Studierende INT,
-    Gruendungsjahr INT,
-    Promotionsrecht VARCHAR(10),
-    Habilitationsrecht VARCHAR(10),
-    Strasse VARCHAR(255),
-    Postleitzahl_Hausanschrift INT,
-    Ort_Hausanschrift VARCHAR(100),
-    Home_Page VARCHAR(255)
+    namekurz_h VARCHAR(50),
+    name_h VARCHAR(255) PRIMARY KEY,
+    typ VARCHAR(100),
+    traeger VARCHAR(100),
+    land VARCHAR(50),
+    studenten INT,
+    gjahr INT,
+    precht VARCHAR(10),
+    hrecht VARCHAR(10),
+    str VARCHAR(255),
+    plz INT,
+    ort VARCHAR(100),
+    web VARCHAR(255)
 );
-
-
-
