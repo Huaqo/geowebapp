@@ -1,4 +1,3 @@
-# Die 10 juegnste/ältesten Unis
 HOCHSCHULEN = """
 SELECT {columns}
 FROM Hochschulen h
