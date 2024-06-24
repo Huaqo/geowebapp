@@ -9,14 +9,12 @@ from queries import HOCHSCHULEN
 from flask import request
 
 def get_hochschulen_data(order, limit, sort_by, attributes, search, search_attr):
-    attributes = [attr for attr in attributes if attr]
     query = text(HOCHSCHULEN.format(order=order, limit=limit, sort_by=sort_by, attributes=', '.join(attributes), search_attr=search_attr))
     result = db.session.execute(query, {'search': f'%{search}%'})
     hochschulen = result.fetchall()
     return hochschulen
 
 def create_hochschulen_table(order, limit, sort_by, attributes, search, search_attr):
-    attributes = [attr for attr in attributes if attr]
     hochschulen = get_hochschulen_data(order, limit, sort_by, attributes, search, search_attr)
     table_data = [list(row) for row in hochschulen]
     table = tabulate(table_data, headers=attributes, tablefmt='html')
@@ -36,6 +34,7 @@ def get_form_parameters():
     attributes = request.args.getlist('attributes')
     if not attributes:
         attributes = default_attributes
+    attributes = [attr for attr in attributes if attr]
     search = request.args.get('search', '')
     search_attr = request.args.get('search_attr', default_search_attr)
     return order, limit, sort_by, attributes, search, search_attr
