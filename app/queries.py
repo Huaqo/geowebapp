@@ -1,7 +1,8 @@
 HOCHSCHULEN = """
-SELECT {columns}
+SELECT {attributes}
 FROM Hochschulen h
-ORDER BY h.gjahr {order}
+WHERE h.{search_attr} ILIKE :search
+ORDER BY {sort_by} {order}
 LIMIT {limit};
 """
 

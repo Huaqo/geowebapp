@@ -10,54 +10,66 @@
             background-color: #f0f0f0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            align-items: flex-start;
+            min-height: 100vh;
             margin: 0;
             flex-direction: column;
-
+            padding: 20px;
         }
         h1 {
             color: #333;
             margin-bottom: 20px;
         }
         form {
-            width: 100%;
-            margin-bottom: 20px;
-            padding: 20px;
+            width: 25%;
             box-sizing: border-box;
+            padding: 20px;
         }
+
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
-        select, input[type="number"] {
+        select, input[type="number"], input[type="text"] {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
-            border-radius: 5px;
             box-sizing: border-box;
+        }
+        button {
+            background-color: #f0f0f0;
+            color: black;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            width: 25%;
+            
+        }
+        button:hover {
+            background-color: #c6ffab;
+            color: black;
         }
         .checkbox-group {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 15px;
+            padding: 12px;
+            border: 1px solid #ccc;
         }
         .checkbox-group input[type="checkbox"] {
-            margin-right: 5px;
         }
         table {
             width: 100%;
             padding: 20px;
-            border: none;
         }
         th, td {
             border: 1px solid #ddd;
             padding: 12px;
             text-align: left;
-
         }
         th {
             background-color: #f2f2f2;
@@ -79,25 +91,53 @@
             -moz-appearance: textfield;
         }
     </style>
-    <script>
-        function submitForm() {
-            document.getElementById('orderForm').submit();
-        }
-    </script>
 </head>
 <body>
     <h1>Hochschulen in Deutschland</h1>
 
     <form id="orderForm" method="get" action="/">
-        
+
+        <label for="search">Suche:</label>
+        <select name="search_attr" id="search_attr" onchange="submitForm()">
+            <option value="name_h" {% if search_attr == 'name_h' %}selected{% endif %}>Hochschulname</option>
+            <option value="typ" {% if search_attr == 'typ' %}selected{% endif %}>Typ</option>
+            <option value="traeger" {% if search_attr == 'traeger' %}selected{% endif %}>Träger</option>
+            <option value="land" {% if search_attr == 'land' %}selected{% endif %}>Land</option>
+            <option value="precht" {% if search_attr == 'precht' %}selected{% endif %}>Precht</option>
+            <option value="hrecht" {% if search_attr == 'hrecht' %}selected{% endif %}>Hrecht</option>
+            <option value="str" {% if search_attr == 'str' %}selected{% endif %}>Straße</option>
+            <option value="ort" {% if search_attr == 'ort' %}selected{% endif %}>Ort</option>
+            <option value="web" {% if search_attr == 'web' %}selected{% endif %}>Web</option>
+        </select>
+        <input type="text" name="search" id="search" value="{{ search }}">
+        <button type="submit">Suche</button>
+
         <label for="order">Sortieren:</label>
         <select name="order" id="order" onchange="submitForm()">
-            <option value="ASC" {% if order == 'ASC' %}selected{% endif %}>Gründungsjahr aufsteigend</option>
-            <option value="DESC" {% if order == 'DESC' %}selected{% endif %}> Gründungsjahr absteigend</option>
+            <option value="ASC" {% if order == 'ASC' %}selected{% endif %}>Aufsteigend</option>
+            <option value="DESC" {% if order == 'DESC' %}selected{% endif %}>Absteigend</option>
+        </select>
+
+        <label for="sort_by">Sortieren nach:</label>
+        <select name="sort_by" id="sort_by" onchange="submitForm()">
+            <option value="name_h" {% if sort_by == 'name_h' %}selected{% endif %}>Hochschulname</option>
+            <option value="gjahr" {% if sort_by == 'gjahr' %}selected{% endif %}>Gründungsjahr</option>
+            <option value="typ" {% if sort_by == 'typ' %}selected{% endif %}>Typ</option>
+            <option value="traeger" {% if sort_by == 'traeger' %}selected{% endif %}>Träger</option>
+            <option value="land" {% if sort_by == 'land' %}selected{% endif %}>Land</option>
+            <option value="studenten" {% if sort_by == 'studenten' %}selected{% endif %}>Studenten</option>
+            <option value="precht" {% if sort_by == 'precht' %}selected{% endif %}>Precht</option>
+            <option value="hrecht" {% if sort_by == 'hrecht' %}selected{% endif %}>Hrecht</option>
+            <option value="str" {% if sort_by == 'str' %}selected{% endif %}>Straße</option>
+            <option value="plz" {% if sort_by == 'plz' %}selected{% endif %}>PLZ</option>
+            <option value="ort" {% if sort_by == 'ort' %}selected{% endif %}>Ort</option>
+            <option value="web" {% if sort_by == 'web' %}selected{% endif %}>Web</option>
         </select>
 
         <label for="limit">Limitieren:</label>
-        <input type="number" name="limit" id="limit" value="{{ limit }}" min="1" onchange="submitForm()">        
+        <input type="number" name="limit" id="limit" value="{{ limit }}" min="1" onchange="submitForm()">
+
+        
 
         <label>Felder:</label><br>
         <div class="checkbox-group">
@@ -114,13 +154,16 @@
             <input type="checkbox" name="attributes" value="plz" {% if 'plz' in attributes %}checked{% endif %} onchange="submitForm()"> PLZ<br>
             <input type="checkbox" name="attributes" value="ort" {% if 'ort' in attributes %}checked{% endif %} onchange="submitForm()"> Ort<br>
             <input type="checkbox" name="attributes" value="web" {% if 'web' in attributes %}checked{% endif %} onchange="submitForm()"> Web<br>
-    
         </div>
-
     </form>
-
-    <!-- <img src="{{ url_for('gjahr_plot_route') }}" alt="Hochschulen Plot"> -->
     
     {{ table | safe }}
+
+    <script>
+        function submitForm() {
+            document.getElementById('orderForm').submit();
+        }
+    </script>
+    
 </body>
 </html>

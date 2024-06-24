@@ -56,20 +56,24 @@ psql -h localhost -p 5432 -U <username> -d postgres
 # Install requirements
 
 ```bash
+cd path/to/geowebapp
+```
+
+```bash
 pip install -r requirements.txt
 ```
 
-# Change server path
+# Change server path in app/config.py
 For example
 
 ```python
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://huaqo:0000@localhost:5432/geowebapp')
+SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'postgresql://huaqo:0000@localhost:5432/geowebapp')
 ```
 
 # Run app
 
 ```bash
-python app.py
+python app/app.py
 ```
 
 ---
