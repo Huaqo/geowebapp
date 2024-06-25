@@ -96,64 +96,60 @@
     <h1>Hochschulen in Deutschland</h1>
 
     <form id="orderForm" method="get" action="/">
-
         <label for="search">Suche:</label>
         <select name="search_attr" id="search_attr" onchange="submitForm()">
-            <option value="name_h" {% if search_attr == 'name_h' %}selected{% endif %}>Hochschulname</option>
-            <option value="typ" {% if search_attr == 'typ' %}selected{% endif %}>Typ</option>
-            <option value="traeger" {% if search_attr == 'traeger' %}selected{% endif %}>Träger</option>
-            <option value="land" {% if search_attr == 'land' %}selected{% endif %}>Land</option>
-            <option value="precht" {% if search_attr == 'precht' %}selected{% endif %}>Precht</option>
-            <option value="hrecht" {% if search_attr == 'hrecht' %}selected{% endif %}>Hrecht</option>
-            <option value="str" {% if search_attr == 'str' %}selected{% endif %}>Straße</option>
-            <option value="ort" {% if search_attr == 'ort' %}selected{% endif %}>Ort</option>
-            <option value="web" {% if search_attr == 'web' %}selected{% endif %}>Web</option>
+            <option value="name_h" {% if parameters.search_attr == 'name_h' %}selected{% endif %}>Hochschulname</option>
+            <option value="typ" {% if parameters.search_attr == 'typ' %}selected{% endif %}>Typ</option>
+            <option value="traeger" {% if parameters.search_attr == 'traeger' %}selected{% endif %}>Träger</option>
+            <option value="land" {% if parameters.search_attr == 'land' %}selected{% endif %}>Land</option>
+            <option value="precht" {% if parameters.search_attr == 'precht' %}selected{% endif %}>Precht</option>
+            <option value="hrecht" {% if parameters.search_attr == 'hrecht' %}selected{% endif %}>Hrecht</option>
+            <option value="str" {% if parameters.search_attr == 'str' %}selected{% endif %}>Straße</option>
+            <option value="ort" {% if parameters.search_attr == 'ort' %}selected{% endif %}>Ort</option>
+            <option value="web" {% if parameters.search_attr == 'web' %}selected{% endif %}>Web</option>
         </select>
-        <input type="text" name="search" id="search" value="{{ search }}">
+        <input type="text" name="search" id="search" value="{{ parameters.search }}">
         <button type="submit">Suche</button>
 
         <label for="order">Sortieren:</label>
         <select name="order" id="order" onchange="submitForm()">
-            <option value="ASC" {% if order == 'ASC' %}selected{% endif %}>Aufsteigend</option>
-            <option value="DESC" {% if order == 'DESC' %}selected{% endif %}>Absteigend</option>
+            <option value="ASC" {% if parameters.order == 'ASC' %}selected{% endif %}>Aufsteigend</option>
+            <option value="DESC" {% if parameters.order == 'DESC' %}selected{% endif %}>Absteigend</option>
         </select>
 
         <label for="sort_by">Sortieren nach:</label>
         <select name="sort_by" id="sort_by" onchange="submitForm()">
-            <option value="name_h" {% if sort_by == 'name_h' %}selected{% endif %}>Hochschulname</option>
-            <option value="gjahr" {% if sort_by == 'gjahr' %}selected{% endif %}>Gründungsjahr</option>
-            <option value="typ" {% if sort_by == 'typ' %}selected{% endif %}>Typ</option>
-            <option value="traeger" {% if sort_by == 'traeger' %}selected{% endif %}>Träger</option>
-            <option value="land" {% if sort_by == 'land' %}selected{% endif %}>Land</option>
-            <option value="studenten" {% if sort_by == 'studenten' %}selected{% endif %}>Studenten</option>
-            <option value="precht" {% if sort_by == 'precht' %}selected{% endif %}>Precht</option>
-            <option value="hrecht" {% if sort_by == 'hrecht' %}selected{% endif %}>Hrecht</option>
-            <option value="str" {% if sort_by == 'str' %}selected{% endif %}>Straße</option>
-            <option value="plz" {% if sort_by == 'plz' %}selected{% endif %}>PLZ</option>
-            <option value="ort" {% if sort_by == 'ort' %}selected{% endif %}>Ort</option>
-            <option value="web" {% if sort_by == 'web' %}selected{% endif %}>Web</option>
+            <option value="name_h" {% if parameters.sort_by == 'name_h' %}selected{% endif %}>Hochschulname</option>
+            <option value="gjahr" {% if parameters.sort_by == 'gjahr' %}selected{% endif %}>Gründungsjahr</option>
+            <option value="typ" {% if parameters.sort_by == 'typ' %}selected{% endif %}>Typ</option>
+            <option value="traeger" {% if parameters.sort_by == 'traeger' %}selected{% endif %}>Träger</option>
+            <option value="land" {% if parameters.sort_by == 'land' %}selected{% endif %}>Land</option>
+            <option value="studenten" {% if parameters.sort_by == 'studenten' %}selected{% endif %}>Studenten</option>
+            <option value="precht" {% if parameters.sort_by == 'precht' %}selected{% endif %}>Precht</option>
+            <option value="hrecht" {% if parameters.sort_by == 'hrecht' %}selected{% endif %}>Hrecht</option>
+            <option value="str" {% if parameters.sort_by == 'str' %}selected{% endif %}>Straße</option>
+            <option value="plz" {% if parameters.sort_by == 'plz' %}selected{% endif %}>PLZ</option>
+            <option value="ort" {% if parameters.sort_by == 'ort' %}selected{% endif %}>Ort</option>
         </select>
 
         <label for="limit">Limitieren:</label>
-        <input type="number" name="limit" id="limit" value="{{ limit }}" min="1" onchange="submitForm()">
-
+        <input type="number" name="limit" id="limit" value="{{ parameters.limit }}" min="1" onchange="submitForm()">
         
-
         <label>Felder:</label><br>
         <div class="checkbox-group">
             <input type="hidden" name="attributes" value="">
-            <input type="checkbox" name="attributes" value="name_h" {% if 'name_h' in attributes %}checked{% endif %} onchange="submitForm()"> Hochschulname<br>
-            <input type="checkbox" name="attributes" value="gjahr" {% if 'gjahr' in attributes %}checked{% endif %} onchange="submitForm()"> Gründungsjahr<br>
-            <input type="checkbox" name="attributes" value="typ" {% if 'typ' in attributes %}checked{% endif %} onchange="submitForm()"> Typ<br>
-            <input type="checkbox" name="attributes" value="traeger" {% if 'traeger' in attributes %}checked{% endif %} onchange="submitForm()"> Träger<br>
-            <input type="checkbox" name="attributes" value="land" {% if 'land' in attributes %}checked{% endif %} onchange="submitForm()"> Land<br>
-            <input type="checkbox" name="attributes" value="studenten" {% if 'studenten' in attributes %}checked{% endif %} onchange="submitForm()"> Studenten<br>
-            <input type="checkbox" name="attributes" value="precht" {% if 'precht' in attributes %}checked{% endif %} onchange="submitForm()"> Precht<br>
-            <input type="checkbox" name="attributes" value="hrecht" {% if 'hrecht' in attributes %}checked{% endif %} onchange="submitForm()"> Hrecht<br>
-            <input type="checkbox" name="attributes" value="str" {% if 'str' in attributes %}checked{% endif %} onchange="submitForm()"> Straße<br>
-            <input type="checkbox" name="attributes" value="plz" {% if 'plz' in attributes %}checked{% endif %} onchange="submitForm()"> PLZ<br>
-            <input type="checkbox" name="attributes" value="ort" {% if 'ort' in attributes %}checked{% endif %} onchange="submitForm()"> Ort<br>
-            <input type="checkbox" name="attributes" value="web" {% if 'web' in attributes %}checked{% endif %} onchange="submitForm()"> Web<br>
+            <input type="checkbox" name="attributes" value="name_h" {% if 'name_h' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Hochschulname<br>
+            <input type="checkbox" name="attributes" value="gjahr" {% if 'gjahr' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Gründungsjahr<br>
+            <input type="checkbox" name="attributes" value="typ" {% if 'typ' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Typ<br>
+            <input type="checkbox" name="attributes" value="traeger" {% if 'traeger' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Träger<br>
+            <input type="checkbox" name="attributes" value="land" {% if 'land' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Land<br>
+            <input type="checkbox" name="attributes" value="studenten" {% if 'studenten' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Studenten<br>
+            <input type="checkbox" name="attributes" value="precht" {% if 'precht' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Precht<br>
+            <input type="checkbox" name="attributes" value="hrecht" {% if 'hrecht' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Hrecht<br>
+            <input type="checkbox" name="attributes" value="str" {% if 'str' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Straße<br>
+            <input type="checkbox" name="attributes" value="plz" {% if 'plz' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> PLZ<br>
+            <input type="checkbox" name="attributes" value="ort" {% if 'ort' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Ort<br>
+            <input type="checkbox" name="attributes" value="web" {% if 'web' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Web<br>
         </div>
     </form>
     

@@ -1,40 +1,52 @@
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import io
+# import matplotlib
+# matplotlib.use('Agg')
+# import matplotlib.pyplot as plt
+# import io
 from tabulate import tabulate
 from sqlalchemy import text
 from models import db
 from queries import HOCHSCHULEN
 from flask import request
 
-def get_hochschulen_data(order, limit, sort_by, attributes, search, search_attr):
-    query = text(HOCHSCHULEN.format(order=order, limit=limit, sort_by=sort_by, attributes=', '.join(attributes), search_attr=search_attr))
-    result = db.session.execute(query, {'search': f'%{search}%'})
-    hochschulen = result.fetchall()
-    return hochschulen
+class Parameters:
+    def __init__(self, order='ASC', limit='10', sort_by='gjahr', attributes=['name_h'], search='', search_attr='name_h'):
+        if attributes is None:
+            attributes = ['name_h']
+        self.order = order
+        self.limit = limit
+        self.sort_by = sort_by
+        self.attributes = attributes
+        self.search = search
+        self.search_attr = search_attr
+    
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
 
-def create_hochschulen_table(order, limit, sort_by, attributes, search, search_attr):
-    hochschulen = get_hochschulen_data(order, limit, sort_by, attributes, search, search_attr)
-    table_data = [list(row) for row in hochschulen]
-    table = tabulate(table_data, headers=attributes, tablefmt='html')
+def get_parameters():
+    parameters = Parameters()
+    parameters.update(
+        order=request.args.get('order', parameters.order),
+        limit=request.args.get('limit', parameters.limit),
+        sort_by=request.args.get('sort_by', parameters.sort_by),
+        attributes=request.args.getlist('attributes') or parameters.attributes,
+        search=request.args.get('search', parameters.search),
+        search_attr=request.args.get('search_attr', parameters.search_attr)
+    )
+    parameters.attributes = [attr for attr in parameters.attributes if attr]
+    return parameters
+
+def get_data(query_template, parameters):
+    params_dict = {k: v for k, v in parameters.__dict__.items()}
+    for key, value in params_dict.items():
+        if isinstance(value, list):
+            params_dict[key] = ', '.join(value)
+    query = query_template.format(**params_dict)  
+    result = db.session.execute(text(query), {'search': f"%{params_dict.get('search', '')}%"})
+    return result.fetchall()
+
+def create_table(data, parameters):
+    table_data = [list(row) for row in data]
+    table = tabulate(table_data, headers=parameters.attributes, tablefmt='html')
     return table
-
-# Fallback variables
-default_order = 'ASC'
-default_limit = '10'
-default_sort_by = 'gjahr'
-default_attributes = ['name_h']
-default_search_attr = 'name_h'
-
-def get_form_parameters():
-    order = request.args.get('order', default_order)
-    limit = request.args.get('limit', default_limit)
-    sort_by = request.args.get('sort_by', default_sort_by)
-    attributes = request.args.getlist('attributes')
-    if not attributes:
-        attributes = default_attributes
-    attributes = [attr for attr in attributes if attr]
-    search = request.args.get('search', '')
-    search_attr = request.args.get('search_attr', default_search_attr)
-    return order, limit, sort_by, attributes, search, search_attr
