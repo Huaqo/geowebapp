@@ -1,49 +1,12 @@
 -- Create a staging table for loading CSV data
 CREATE TABLE Bevoelkerung (
-    id INTEGER,
-    name_bev VARCHAR(100),
-    total INTEGER,
-    total_w INTEGER,
-    total_m INTEGER
-);
-
--- Create the regions_population table
-CREATE TABLE Bundesland (
-    id INTEGER NOT NULL PRIMARY KEY,
-    name_b VARCHAR(100) NOT NULL,
-    total INTEGER,
-    total_w INTEGER,
-    total_m INTEGER
-);
-
-CREATE TABLE Regierungsbezirk (
-    id INTEGER NOT NULL PRIMARY KEY,
-    name_r VARCHAR(100) NOT NULL,
-    total INTEGER,
-    total_w INTEGER,
-    total_m INTEGER,
-    bundesland_id INTEGER,
-    FOREIGN KEY (bundesland_id) REFERENCES Bundesland(id)
-);
-
-CREATE TABLE Landkreis (
-    id INTEGER NOT NULL PRIMARY KEY,
-    name_l VARCHAR(100) NOT NULL,
-    total INTEGER,
-    total_w INTEGER,
-    total_m INTEGER,
-    regierungsbezirk_id INTEGER,
-    FOREIGN KEY (regierungsbezirk_id) REFERENCES Regierungsbezirk(id)
-);
-
-CREATE TABLE Stadt (
-    id INTEGER NOT NULL PRIMARY KEY,
-    name_s VARCHAR(100) NOT NULL,
-    total INTEGER,
-    total_w INTEGER,
-    total_m INTEGER,
-    landkreis_id INTEGER,
-    FOREIGN KEY (landkreis_id) REFERENCES Landkreis(id)
+    region_code VARCHAR(10) PRIMARY KEY,
+    region_name VARCHAR(50),
+    total_population INT,
+    male_population INT,
+    female_population INT,
+    region_type VARCHAR(20),
+    bundesland VARCHAR(50)
 );
 
 -- Create the Hochschulen table
@@ -60,5 +23,7 @@ CREATE TABLE Hochschulen (
     str VARCHAR(255),
     plz INT,
     ort VARCHAR(100),
-    web VARCHAR(255)
+    web VARCHAR(255),
+    lat DECIMAL(18, 10),
+    lon DECIMAL(18, 10)
 );

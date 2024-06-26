@@ -1,10 +1,4 @@
-HOCHSCHULEN = """
-SELECT {attributes}
-FROM Hochschulen h
-WHERE h.{search_attr} ILIKE :search
-ORDER BY {sort_by} {order}
-LIMIT {limit};
-"""
+
 
 # Alle Typen von Hochschulen
 HOCHSCHULEN_TYPES_COUNT_DESC = """
@@ -75,3 +69,9 @@ GROUP BY
     s.name_s
 ORDER BY Studentenanteil DESC;
 """
+
+# SELECT h.name_h, h.ort, s.total
+# FROM Hochschulen h
+# JOIN Bundesland b ON h.land = b.name_b
+# JOIN Stadt s ON s.name_s LIKE CONCAT(h.ort, ',%') AND h.land = b.name_b
+# LIMIT 100;

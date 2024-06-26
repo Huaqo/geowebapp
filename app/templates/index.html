@@ -4,98 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hochschulen in Deutschland</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            margin: 0;
-            flex-direction: column;
-            padding: 20px;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        form {
-            width: 25%;
-            box-sizing: border-box;
-            padding: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        select, input[type="number"], input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #f0f0f0;
-            color: black;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: none;
-            cursor: pointer;
-            border: 1px solid #ccc;
-            width: 25%;
-            
-        }
-        button:hover {
-            background-color: #c6ffab;
-            color: black;
-        }
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            padding: 12px;
-            border: 1px solid #ccc;
-        }
-        .checkbox-group input[type="checkbox"] {
-        }
-        table {
-            width: 100%;
-            padding: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #c6ffab;
-        }
-        /* Remove up and down numbers from input */
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
-        }
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <h1>Hochschulen in Deutschland</h1>
 
-    <form id="orderForm" method="get" action="/">
+    <form id="filterForm" method="get" action="/">
         <label for="search">Suche:</label>
         <select name="search_attr" id="search_attr" onchange="submitForm()">
             <option value="name_h" {% if parameters.search_attr == 'name_h' %}selected{% endif %}>Hochschulname</option>
@@ -128,38 +42,38 @@
             <option value="precht" {% if parameters.sort_by == 'precht' %}selected{% endif %}>Precht</option>
             <option value="hrecht" {% if parameters.sort_by == 'hrecht' %}selected{% endif %}>Hrecht</option>
             <option value="str" {% if parameters.sort_by == 'str' %}selected{% endif %}>Straße</option>
-            <option value="plz" {% if parameters.sort_by == 'plz' %}selected{% endif %}>PLZ</option>
             <option value="ort" {% if parameters.sort_by == 'ort' %}selected{% endif %}>Ort</option>
+            <option value="b.total_population" {% if parameters.sort_by == 'b.total_population' %}selected{% endif %}>Einwohner</option>
         </select>
 
         <label for="limit">Limitieren:</label>
         <input type="number" name="limit" id="limit" value="{{ parameters.limit }}" min="1" onchange="submitForm()">
-        
+
         <label>Felder:</label><br>
         <div class="checkbox-group">
             <input type="hidden" name="attributes" value="">
-            <input type="checkbox" name="attributes" value="name_h" {% if 'name_h' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Hochschulname<br>
-            <input type="checkbox" name="attributes" value="gjahr" {% if 'gjahr' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Gründungsjahr<br>
-            <input type="checkbox" name="attributes" value="typ" {% if 'typ' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Typ<br>
-            <input type="checkbox" name="attributes" value="traeger" {% if 'traeger' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Träger<br>
-            <input type="checkbox" name="attributes" value="land" {% if 'land' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Land<br>
-            <input type="checkbox" name="attributes" value="studenten" {% if 'studenten' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Studenten<br>
-            <input type="checkbox" name="attributes" value="precht" {% if 'precht' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Precht<br>
-            <input type="checkbox" name="attributes" value="hrecht" {% if 'hrecht' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Hrecht<br>
-            <input type="checkbox" name="attributes" value="str" {% if 'str' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Straße<br>
-            <input type="checkbox" name="attributes" value="plz" {% if 'plz' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> PLZ<br>
-            <input type="checkbox" name="attributes" value="ort" {% if 'ort' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Ort<br>
-            <input type="checkbox" name="attributes" value="web" {% if 'web' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Web<br>
+            <input type="checkbox" name="attributes" value="h.name_h" {% if 'h.name_h' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Hochschulname<br>
+            <input type="checkbox" name="attributes" value="h.gjahr" {% if 'h.gjahr' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Gründungsjahr<br>
+            <input type="checkbox" name="attributes" value="h.typ" {% if 'h.typ' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Typ<br>
+            <input type="checkbox" name="attributes" value="h.traeger" {% if 'h.traeger' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Träger<br>
+            <input type="checkbox" name="attributes" value="h.land" {% if 'h.land' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Land<br>
+            <input type="checkbox" name="attributes" value="h.studenten" {% if 'h.studenten' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Studenten<br>
+            <input type="checkbox" name="attributes" value="h.precht" {% if 'h.precht' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Precht<br>
+            <input type="checkbox" name="attributes" value="h.hrecht" {% if 'h.hrecht' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Hrecht<br>
+            <input type="checkbox" name="attributes" value="h.str" {% if 'h.str' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Straße<br>
+            <input type="checkbox" name="attributes" value="h.ort" {% if 'h.ort' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Ort<br>
+            <input type="checkbox" name="attributes" value="h.web" {% if 'h.web' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Web<br>
+            <input type="checkbox" name="attributes" value="b.total_population" {% if 'b.total_population' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Einwohner<br>
         </div>
+
+        <input type="hidden" name="generate_map" id="generate_map" value="">
+
     </form>
-    
+    <div id="map">
+        {{ map|safe }}
+    </div>
     {{ table | safe }}
 
-    <script>
-        function submitForm() {
-            document.getElementById('orderForm').submit();
-        }
-    </script>
-    
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>
