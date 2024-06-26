@@ -1,0 +1,92 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    flex-direction: column;
+    padding: 500px;
+    padding-top: 20px;
+}
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+    align-self: center;
+}
+form {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+select, input[type="number"], input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+button {
+    background-color: #f0f0f0;
+    color: black;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    width: 25%;
+    
+}
+button:hover {
+    background-color: #c6ffab;
+    color: black;
+}
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid #ccc;
+}
+.checkbox-group input[type="checkbox"] {
+}
+table {
+    width: 100%;
+    padding: 20px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+tr:hover {
+    background-color: #c6ffab;
+}
+/* Remove up and down numbers from input */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
