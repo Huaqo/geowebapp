@@ -2,17 +2,39 @@ from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from tabulate import tabulate
 from sqlalchemy import text
-from queries import DATASET, DATASET_GROUPED
 import folium
 import os
 from decimal import Decimal
 
+## QUERIES
 
-# import matplotlib
-# matplotlib.use('Agg')
-# import matplotlib.pyplot as plt
+DATASET = """
+SELECT {attributes}
+FROM Hochschulen h
+JOIN Mieten m ON m.land = h.land
+LEFT JOIN Bevoelkerung b ON b.region_name = h.ort 
+AND b.bundesland = h.land 
+AND (
+    b.region_type = 'kreis' 
+    OR b.region_name = 'Berlin' 
+    OR b.region_name = 'Hamburg' 
+    OR b.region_name = 'Bremen' 
+    OR b.region_name = 'Hannover' AND b.region_type = 'landeshauptstadt' 
+    OR b.region_name = 'Saarbrücken' AND b.region_type = 'landeshauptstadt')
+WHERE {search_attr} ILIKE :search
+ORDER BY {sort_by} {order}
+LIMIT {limit};
+"""
+
+DATASET_GROUPED = """
+SELECT {group_by}, COUNT(*) AS Anzahl
+FROM Hochschulen
+GROUP BY {group_by}
+ORDER BY Anzahl DESC;
+"""
 
 ## INIT
+
 
 db = SQLAlchemy()
 
@@ -21,7 +43,8 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 def create_app():
-    app = Flask(__name__)
+    template_dir = os.path.abspath('.')
+    app = Flask(__name__,template_folder=template_dir)
     app.config.from_object(Config)
     db.init_app(app)
     return app
@@ -74,9 +97,7 @@ def get_data(query_template, parameters):
             params_dict[key] = ', '.join(value)
     query = query_template.format(**params_dict)
     result = db.session.execute(text(query), {'search': f"%{params_dict.get('search', '')}%"})
-    print("Final query:", query)
-    print("Search parameter:", f"%{parameters.search}%")
-    print("Limit parameter:", parameters.limit)
+
     return result.fetchall()
 
 ## TABLE
@@ -125,7 +146,7 @@ def generate_map(data, column_names):
             bounds.append([lat, lon])
 
     if bounds:
-        map.fit_bounds(bounds)  # Fit the map to the bounds of the markers
+        map.fit_bounds(bounds)
 
     map_html = map._repr_html_()
     return map_html

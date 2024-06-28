@@ -4,7 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hochschulen in Deutschland</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            padding: 500px;
+            padding-top: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            align-self: center;
+        }
+        
+        h2 {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+        
+        form {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        select, input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 12px;
+            border: 1px solid #ccc;
+        }
+        .checkbox-group input[type="checkbox"] {
+        }
+        table {
+            width: 100%;
+            padding: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #c6ffab;
+        }
+        /* Remove up and down numbers from input */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        
+        #map {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+        
+        details {
+            margin: 0 20px 10px 20px; /* Add margin around the label */
+        
+        }
+        
+        .shortcuts-label {
+            margin: 0 20px 10px 20px; /* Add margin around the label */
+            font-weight: bold;
+        }
+        
+        .shortcuts {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Three columns */
+            gap: 10px;
+            padding: 0 20px; /* Add padding to the left and right */
+            max-width: 100%; /* Ensure the container does not exceed the viewport width */
+            box-sizing: border-box; /* Ensure padding is included in the element's total width and height */
+            margin: 0 auto; /* Center the container */
+        }
+        
+        /* Modify the existing button selector */
+        button {
+            background-color: #f0f0f0;
+            color: black;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            width: 100%; /* Ensure the button takes full width of the grid cell */
+            box-sizing: border-box;
+        }
+        
+        button:hover {
+            background-color: #c6ffab;
+            color: black;
+        }
+        
+        /* Modify the existing a selector */
+        a {
+            text-decoration: none; /* Remove underline from links */
+            color: inherit; /* Inherit color from parent */
+        }        
+    </style>
 </head>
 <body>
     <h1>Hochschulen in Deutschland</h1>
@@ -96,7 +228,7 @@
             <input type="checkbox" name="attributes" value="h.ort" {% if 'h.ort' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Ort<br>
             <input type="checkbox" name="attributes" value="h.web" {% if 'h.web' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Web<br>
             <input type="checkbox" name="attributes" value="b.total_population" {% if 'b.total_population' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Einwohner<br>
-            <input type="checkbox" name="attributes" value="m.mieten_ab_2019" {% if 'm.mieten_ab_2019' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Mieten<br>
+            <input type="checkbox" name="attributes" value="m.mieten_ab_2019" {% if 'm.mieten_ab_2019' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Mieten<br>            
         </div>
 
         <input type="hidden" name="generate_map" id="generate_map" value="">
@@ -113,6 +245,35 @@
     {{ table | safe }}
 
 
-    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <script>
+        function submitForm() {
+            document.getElementById('generate_map').value = "true";
+            document.getElementById('filterForm').submit();
+        }
+        
+        function submitGroupByForm() {
+            document.getElementById('groupByForm').submit();
+        }
+        
+        function generateMap() {
+            document.getElementById('generate_map').value = "true";
+            document.getElementById('filterForm').submit();
+        }
+        
+        // Preserve checkbox states on form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    if (checkbox.checked) {
+                        checkbox.setAttribute('checked', 'checked');
+                    } else {
+                        checkbox.removeAttribute('checked');
+                    }
+                });
+            });
+            document.getElementById('group_by').addEventListener('change', submitGroupByForm);
+        });
+    </script>
 </body>
 </html>

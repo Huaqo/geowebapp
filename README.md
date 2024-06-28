@@ -1,3 +1,15 @@
+# Data preprocessing
+
+```bash
+cd path/to/geowebapp
+```
+
+```bash
+python3 data/preprocess_bevoelkerung.py
+python3 data/preprocess_hochschulen.py # Nur wenn nötig, dauert sehr lange wegen Koordinaten
+python3 data/preprocess_mieten.py
+```
+
 # Setup Postgresql
 
 ## Install
@@ -20,7 +32,7 @@ psql -h localhost -p 5432 -U <username> -d postgres
 1. create_database.sql
 
 ```sql
-\i /path/to/geowebapp/sql/create_database.sql
+CREATE DATABASE geowebapp;
 ```
 
 2. Check
@@ -111,10 +123,6 @@ SELECT * FROM your_table_name LIMIT 5;
 # Install requirements
 
 ```bash
-cd path/to/geowebapp
-```
-
-```bash
 pip install -r requirements.txt
 ```
 
@@ -128,72 +136,5 @@ SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'postgresql://huaqo:0000@loc
 # Run app
 
 ```bash
-python app/app.py
+python app.py
 ```
-
----
-
-# Psql cheatsheet
-
-## Show all databases
-
-```sql
-\l
-```
-
-## Create your database
-
-```sql
-CREATE DATABASE geowebapp;
-```
-
-## Switch database
-
-```sql
-\c geowebapp
-```
-
-## Delete database
-```sql
-DROP DATABASE database_name;
-```
-
-## Show all tables
-
-```sql
-\dt
-```
-
-## Show first 5 rows of table
-
-```sql
-SELECT * FROM your_table_name LIMIT 5;
-```
-
-## Delete tables
-
-```sql
-DROP TABLE table_name;
-```
-
-## Exit psql
-
-```sql
-\q
-```
-
-## Create user
-
-```sql
-CREATE USER newuser WITH PASSWORD 'newpassword';
-GRANT ALL PRIVILEGES ON DATABASE mydatabase TO newuser;
-\q
-```
-
-## Change password
-
-```sql
-ALTER USER username WITH PASSWORD 'newpassword';
-\q
-```
-
