@@ -21,26 +21,22 @@
             color: #333;
             margin-bottom: 20px;
             align-self: center;
-        }
-        
+        }   
         h2 {
             width: 100%;
             box-sizing: border-box;
             padding: 20px;
         }
-        
         form {
             width: 100%;
             box-sizing: border-box;
             padding: 20px;
         }
-        
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
-        
         select, input[type="number"], input[type="text"] {
             width: 100%;
             padding: 12px;
@@ -48,15 +44,12 @@
             border: 1px solid #ccc;
             box-sizing: border-box;
         }
-        
         .checkbox-group {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             padding: 12px;
             border: 1px solid #ccc;
-        }
-        .checkbox-group input[type="checkbox"] {
         }
         table {
             width: 100%;
@@ -77,7 +70,6 @@
         tr:hover {
             background-color: #c6ffab;
         }
-        /* Remove up and down numbers from input */
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none; 
@@ -85,35 +77,29 @@
         }
         input[type=number] {
             -moz-appearance: textfield;
-        }
-        
+        } 
         #map {
             width: 100%;
             box-sizing: border-box;
             padding: 20px;
         }
-        
         details {
-            margin: 0 20px 10px 20px; /* Add margin around the label */
+            margin: 0 20px 10px 20px; 
         
         }
-        
         .shortcuts-label {
-            margin: 0 20px 10px 20px; /* Add margin around the label */
+            margin: 0 20px 10px 20px; 
             font-weight: bold;
         }
-        
         .shortcuts {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Three columns */
+            grid-template-columns: repeat(3, 1fr); 
             gap: 10px;
-            padding: 0 20px; /* Add padding to the left and right */
-            max-width: 100%; /* Ensure the container does not exceed the viewport width */
-            box-sizing: border-box; /* Ensure padding is included in the element's total width and height */
-            margin: 0 auto; /* Center the container */
+            padding: 0 20px; 
+            max-width: 100%; 
+            box-sizing: border-box; 
+            margin: 0 auto; 
         }
-        
-        /* Modify the existing button selector */
         button {
             background-color: #f0f0f0;
             color: black;
@@ -122,28 +108,24 @@
             border: none;
             cursor: pointer;
             border: 1px solid #ccc;
-            width: 100%; /* Ensure the button takes full width of the grid cell */
+            width: 100%; 
             box-sizing: border-box;
         }
-        
         button:hover {
             background-color: #c6ffab;
             color: black;
         }
-        
-        /* Modify the existing a selector */
         a {
-            text-decoration: none; /* Remove underline from links */
-            color: inherit; /* Inherit color from parent */
+            text-decoration: none; 
+            color: inherit; 
         }        
     </style>
 </head>
 <body>
     <h1>Hochschulen in Deutschland</h1>
-
-
-
+    
     <h2>Übersicht</h2>
+    
     <form id="groupByForm" method="get" action="/">
         <label for="group_by">Gruppieren nach:</label>
         <select name="group_by" id="group_by" onchange="submitGroupByForm()">
@@ -154,9 +136,11 @@
             <option value="hrecht" {% if parameters.group_by == 'hrecht' %}selected{% endif %}>Habilitationsrecht</option>
         </select>
     </form>
+    
     {{ table_grouped | safe }}
 
     <h2>Gesamter Datensatz</h2>
+    
     <label class="shortcuts-label">Shortcuts:</label>
     <div class="shortcuts">
         <a href="//127.0.0.1:5000/?search_attr=typ&search=&order=ASC&sort_by=gjahr&limit=10&attributes=&attributes=h.name_h&attributes=h.gjahr&attributes=h.ort&generate_map=true"><button >Älteste Hochschulen in Deutschland</button></a>
@@ -235,15 +219,11 @@
 
     </form>
 
-    
-
-
     <div id="map">
         {{ map |safe }}
     </div>
     
     {{ table | safe }}
-
 
     <script>
         function submitForm() {
@@ -260,7 +240,6 @@
             document.getElementById('filterForm').submit();
         }
         
-        // Preserve checkbox states on form submission
         document.addEventListener('DOMContentLoaded', function() {
             const checkboxes = document.querySelectorAll('input[type="checkbox"]');
             checkboxes.forEach(function(checkbox) {
