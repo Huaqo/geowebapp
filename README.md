@@ -1,37 +1,46 @@
-# Data preprocessing
+# Data preprocessing 
 
 ```bash
 cd path/to/geowebapp
 ```
 
+(OPTIONAL)
+
+Eigentlich sind die Daten schon verarbeitet in data/preprocessed
+
 ```bash
 python3 data/preprocess_bevoelkerung.py
 ```
 ```bash
-python3 data/preprocess_hochschulen.py # Nur wenn nötig, dauert sehr lange wegen Koordinaten
+python3 data/preprocess_hochschulen.py # Nur wenn nötig, dauert sehr lange wegen Koordinaten und kann auch abrechen
 ```
 ```bash
 python3 data/preprocess_mieten.py
 ```
 
-# Setup Postgresql
+# Setup Postgresql MacOS
+
+Bei MacOS installiert man im Terminal mit Brew, weis nicht was das bei Windows ist. Geht bestimmt auch über den normalen Installer von deren Website.
 
 ## Install
+
 
 ```bash
 brew install postgresql@14
 ```
 
 ## Start
+
 ```bash
 brew services start postgresql@14
 ```
 
+
+# Run sql 
+
 ```bash
 psql -h localhost -p 5432 -U <username> -d postgres
 ```
-
-# Run sql
 
 1. create_database.sql
 
@@ -137,8 +146,12 @@ For example
 SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'postgresql://huaqo:0000@localhost:5432/geowebapp')
 ```
 
+huaqo sollte mit deinem usernamen ersetzt werden und 0000 mit deinem password. Der rest sollte gleich sein. Vielleicht hast du einen anderen port, nicht 5432.
+
 # Run app
 
 ```bash
 python app.py
 ```
+
+öffne `http://127.0.0.1:5000` in einem Browser um die App zu sehen, solange flask im Terminal läuft.
