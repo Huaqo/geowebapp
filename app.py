@@ -100,7 +100,7 @@ def get_data(query_template, parameters):
 
     return result.fetchall()
 
-## TABLE
+## TABLES
 
 def create_table(data, parameters):
     lat_index = parameters.attributes.index('lat') if 'lat' in parameters.attributes else -1
@@ -115,8 +115,8 @@ def create_table(data, parameters):
     table = tabulate(filtered_data, headers=filtered_attributes, tablefmt='html')
     return table
 
-def create_grouped_table(data, group_by):
-    headers = [group_by, 'Anzahl']
+def create_grouped_table(data, parameters):
+    headers = [parameters.group_by, 'Anzahl']
     table = tabulate(data, headers=headers, tablefmt='html')
     return table
 
@@ -161,7 +161,7 @@ def home():
     dataset = get_data(DATASET, dataset_parameters)
     dataset_grouped = get_data(DATASET_GROUPED, dataset_parameters)
     table = create_table(dataset, dataset_parameters)
-    table_grouped = create_grouped_table(dataset_grouped, dataset_parameters.group_by)
+    table_grouped = create_grouped_table(dataset_grouped, dataset_parameters)
     map = generate_map(dataset, dataset_parameters.attributes)
     return render_template('index.html', table=table, table_grouped=table_grouped, parameters=dataset_parameters, map=map)
 
