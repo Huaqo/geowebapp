@@ -3,6 +3,10 @@ function submitForm() {
     document.getElementById('filterForm').submit();
 }
 
+function submitGroupByForm() {
+    document.getElementById('groupByForm').submit();
+}
+
 function generateMap() {
     document.getElementById('generate_map').value = "true";
     document.getElementById('filterForm').submit();
@@ -20,4 +24,5 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    document.getElementById('group_by').addEventListener('change', submitGroupByForm);
 });

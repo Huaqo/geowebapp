@@ -1,77 +1,47 @@
-
-
-# Alle Typen von Hochschulen
-HOCHSCHULEN_TYPES_COUNT_DESC = """
-SELECT typ, COUNT(*) AS Anzahl_Hochschulen
-FROM Hochschulen
-GROUP BY typ
-ORDER BY Anzahl_Hochschulen DESC;
+DATASET = """
+SELECT {attributes}
+FROM Hochschulen h
+JOIN Mieten m ON m.land = h.land
+LEFT JOIN Bevoelkerung b ON b.region_name = h.ort 
+AND b.bundesland = h.land 
+AND (
+    b.region_type = 'kreis' 
+    OR b.region_name = 'Berlin' 
+    OR b.region_name = 'Hamburg' 
+    OR b.region_name = 'Bremen' 
+    OR b.region_name = 'Hannover' AND b.region_type = 'landeshauptstadt' 
+    OR b.region_name = 'Saarbrücken' AND b.region_type = 'landeshauptstadt')
+WHERE {search_attr} ILIKE :search
+ORDER BY {sort_by} {order}
+LIMIT {limit};
 """
 
-# Bundesländer mit den meisten Unis
-BUNDESLAND_HOCHSCHULEN_COUNT = """
-SELECT land, COUNT(*) AS Anzahl_Hochschulen
+DATASET_GROUPED = """
+SELECT {group_by}, COUNT(*) AS Anzahl
 FROM Hochschulen
-GROUP BY land
-ORDER BY Anzahl_Hochschulen DESC
-LIMIT 3;
-"""
-
-# Alle Typen nach Bundesland von Hochschulen
-HOCHSCHULEN_TYPES_COUNT_DESC_GROUP_BY_BUNDESLAND = """
-SELECT land, typ, COUNT(*) AS Anzahl_Hochschulen
-FROM Hochschulen
-GROUP BY land, typ
-ORDER BY land, Anzahl_Hochschulen ASC;
-"""
-
-# Studentenanteil Bundesländer
-STUDENTENANTEIL_BUNDESL = """
-SELECT 
-    b.name_b,
-    SUM(h.studenten * 100.0 / b.total) AS Studentenanteil
-FROM 
-    Bundesland b
-JOIN 
-    Hochschulen h 
-ON 
-    LOWER(h.land) = LOWER(
-        CASE 
-            WHEN POSITION(',' IN b.name_b) > 0 
-            THEN SUBSTRING(b.name_b FROM 1 FOR POSITION(',' IN b.name_b) - 1)
-            ELSE b.name_b
-        END
-    )
-GROUP BY 
-    b.name_b
-ORDER BY Studentenanteil DESC;
+GROUP BY {group_by}
+ORDER BY Anzahl DESC;
 """
 
 
 # Studentenanteil Städte
 STUDENTENANTEIL_STAEDTE = """
 SELECT 
-    s.name_s,
-    SUM(h.studenten * 100.0 / s.total) AS Studentenanteil
+    b.region_name,
+    ROUND(SUM(h.studenten * 100.0 / b.total_population)) AS Studentenanteil_in_Prozent
 FROM 
-    Stadt s
+    Bevoelkerung b
 JOIN 
     Hochschulen h 
 ON 
     LOWER(h.ort) = LOWER(
         CASE 
-            WHEN POSITION(',' IN s.name_s) > 0 
-            THEN SUBSTRING(s.name_s FROM 1 FOR POSITION(',' IN s.name_s) - 1)
-            ELSE s.name_s
+            WHEN POSITION(',' IN b.region_name) > 0 
+            THEN SUBSTRING(b.region_name FROM 1 FOR POSITION(',' IN b.region_name) - 1)
+            ELSE b.region_name
         END
     )
 GROUP BY 
-    s.name_s
-ORDER BY Studentenanteil DESC;
+    b.region_name
+ORDER BY Studentenanteil_in_Prozent DESC;
 """
-
-# SELECT h.name_h, h.ort, s.total
-# FROM Hochschulen h
-# JOIN Bundesland b ON h.land = b.name_b
-# JOIN Stadt s ON s.name_s LIKE CONCAT(h.ort, ',%') AND h.land = b.name_b
-# LIMIT 100;

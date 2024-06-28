@@ -9,21 +9,50 @@
 <body>
     <h1>Hochschulen in Deutschland</h1>
 
+
+
+    <h2>Übersicht</h2>
+    <form id="groupByForm" method="get" action="/">
+        <label for="group_by">Gruppieren nach:</label>
+        <select name="group_by" id="group_by" onchange="submitGroupByForm()">
+            <option value="land" {% if parameters.group_by == 'land' %}selected{% endif %}>Bundesland</option>
+            <option value="typ" {% if parameters.group_by == 'typ' %}selected{% endif %}>Hochschultyp</option>
+            <option value="traeger" {% if parameters.group_by == 'traeger' %}selected{% endif %}>Träger</option>
+            <option value="precht" {% if parameters.group_by == 'precht' %}selected{% endif %}>Promotionsrecht</option>
+            <option value="hrecht" {% if parameters.group_by == 'hrecht' %}selected{% endif %}>Habilitationsrecht</option>
+        </select>
+    </form>
+    {{ table_grouped | safe }}
+
+    <h2>Gesamter Datensatz</h2>
+    <label class="shortcuts-label">Shortcuts:</label>
+    <div class="shortcuts">
+        <a href="//127.0.0.1:5000/?search_attr=typ&search=&order=ASC&sort_by=gjahr&limit=10&attributes=&attributes=h.name_h&attributes=h.gjahr&attributes=h.ort&generate_map=true"><button >Älteste Hochschulen in Deutschland</button></a>
+        <a href="//127.0.0.1:5000/?search_attr=typ&search=&order=DESC&sort_by=gjahr&limit=10&attributes=&attributes=h.name_h&attributes=h.gjahr&attributes=h.ort&generate_map=true"><button >Jüngste Hochschulen in Deutschland</button></a>
+        <a href="//127.0.0.1:5000/?search_attr=typ&search=&order=DESC&sort_by=studenten&limit=10&attributes=&attributes=h.name_h&attributes=h.studenten&attributes=h.ort&generate_map=true"><button >Hochschulen mit den meisten Studenten</button></a>
+        <a href="//127.0.0.1:5000/?search_attr=h.land&search=Berlin&order=DESC&sort_by=studenten&limit=10&attributes=&attributes=h.name_h&attributes=h.studenten&generate_map=true"><button >Berliner Hochschulen mit den meisten Studenten</button></a>
+        <a href="//127.0.0.1:5000/?search_attr=typ&search=&order=ASC&sort_by=studenten&limit=10&attributes=&attributes=h.name_h&attributes=h.studenten&attributes=h.ort&generate_map=true"><button >Hochschulen mit den wenigsten Studenten</button></a>
+        <a href="//127.0.0.1:5000/?search_attr=typ&search=&order=DESC&sort_by=b.total_population&limit=10&attributes=&attributes=h.name_h&attributes=h.ort&attributes=b.total_population&generate_map=true"><button >Hochschulen mit den meisten Einwohnern</button></a>
+        <a href="//127.0.0.1:5000/?search_attr=typ&search=&order=ASC&sort_by=b.total_population&limit=10&attributes=&attributes=h.name_h&attributes=h.ort&attributes=b.total_population&generate_map=true"><button >Hochschulen mit den wenigsten Einwohnern</button></a>
+        <a href="//127.0.0.1:5000/?search_attr=typ&search=&order=ASC&sort_by=m.mieten_ab_2019&limit=100&attributes=&attributes=h.name_h&attributes=h.ort&attributes=m.mieten_ab_2019&generate_map=true"><button >Hochschulen mit den niedrigsten Mieten</button></a>
+        <a href="//127.0.0.1:5000/?search_attr=typ&search=&order=DESC&sort_by=m.mieten_ab_2019&limit=200&attributes=&attributes=h.name_h&attributes=h.ort&attributes=m.mieten_ab_2019&generate_map=true"><button >Hochschulen mit den höchsten Mieten</button></a>
+    </div>
+    
     <form id="filterForm" method="get" action="/">
-        <label for="search">Suche:</label>
+        <label for="search">Filter:</label>
         <select name="search_attr" id="search_attr" onchange="submitForm()">
-            <option value="name_h" {% if parameters.search_attr == 'name_h' %}selected{% endif %}>Hochschulname</option>
-            <option value="typ" {% if parameters.search_attr == 'typ' %}selected{% endif %}>Typ</option>
-            <option value="traeger" {% if parameters.search_attr == 'traeger' %}selected{% endif %}>Träger</option>
-            <option value="land" {% if parameters.search_attr == 'land' %}selected{% endif %}>Land</option>
-            <option value="precht" {% if parameters.search_attr == 'precht' %}selected{% endif %}>Precht</option>
-            <option value="hrecht" {% if parameters.search_attr == 'hrecht' %}selected{% endif %}>Hrecht</option>
-            <option value="str" {% if parameters.search_attr == 'str' %}selected{% endif %}>Straße</option>
-            <option value="ort" {% if parameters.search_attr == 'ort' %}selected{% endif %}>Ort</option>
-            <option value="web" {% if parameters.search_attr == 'web' %}selected{% endif %}>Web</option>
+            <option value="h.name_h" {% if parameters.search_attr == 'h.name_h' %}selected{% endif %}>Hochschulname</option>
+            <option value="h.typ" {% if parameters.search_attr == 'h.typ' %}selected{% endif %}>Typ</option>
+            <option value="h.traeger" {% if parameters.search_attr == 'h.traeger' %}selected{% endif %}>Träger</option>
+            <option value="h.land" {% if parameters.search_attr == 'h.land' %}selected{% endif %}>Land</option>
+            <option value="h.precht" {% if parameters.search_attr == 'h.precht' %}selected{% endif %}>Precht</option>
+            <option value="h.hrecht" {% if parameters.search_attr == 'h.hrecht' %}selected{% endif %}>Hrecht</option>
+            <option value="h.str" {% if parameters.search_attr == 'h.str' %}selected{% endif %}>Straße</option>
+            <option value="h.ort" {% if parameters.search_attr == 'h.ort' %}selected{% endif %}>Ort</option>
+            <option value="h.web" {% if parameters.search_attr == 'h.web' %}selected{% endif %}>Web</option>
         </select>
         <input type="text" name="search" id="search" value="{{ parameters.search }}">
-        <button type="submit">Suche</button>
+        <button type="submit">Filter</button>
 
         <label for="order">Sortieren:</label>
         <select name="order" id="order" onchange="submitForm()">
@@ -41,15 +70,17 @@
             <option value="studenten" {% if parameters.sort_by == 'studenten' %}selected{% endif %}>Studenten</option>
             <option value="precht" {% if parameters.sort_by == 'precht' %}selected{% endif %}>Precht</option>
             <option value="hrecht" {% if parameters.sort_by == 'hrecht' %}selected{% endif %}>Hrecht</option>
+            <option value="plz" {% if parameters.sort_by == 'plz' %}selected{% endif %}>PLZ</option>
             <option value="str" {% if parameters.sort_by == 'str' %}selected{% endif %}>Straße</option>
             <option value="ort" {% if parameters.sort_by == 'ort' %}selected{% endif %}>Ort</option>
             <option value="b.total_population" {% if parameters.sort_by == 'b.total_population' %}selected{% endif %}>Einwohner</option>
+            <option value="m.mieten_ab_2019" {% if parameters.sort_by == 'm.mieten_ab_2019' %}selected{% endif %}>Mieten</option>
         </select>
 
         <label for="limit">Limitieren:</label>
         <input type="number" name="limit" id="limit" value="{{ parameters.limit }}" min="1" onchange="submitForm()">
 
-        <label>Felder:</label><br>
+        <label>Infos:</label><br>
         <div class="checkbox-group">
             <input type="hidden" name="attributes" value="">
             <input type="checkbox" name="attributes" value="h.name_h" {% if 'h.name_h' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Hochschulname<br>
@@ -60,19 +91,27 @@
             <input type="checkbox" name="attributes" value="h.studenten" {% if 'h.studenten' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Studenten<br>
             <input type="checkbox" name="attributes" value="h.precht" {% if 'h.precht' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Precht<br>
             <input type="checkbox" name="attributes" value="h.hrecht" {% if 'h.hrecht' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Hrecht<br>
+            <input type="checkbox" name="attributes" value="h.plz" {% if 'h.plz' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> PLZ<br>
             <input type="checkbox" name="attributes" value="h.str" {% if 'h.str' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Straße<br>
             <input type="checkbox" name="attributes" value="h.ort" {% if 'h.ort' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Ort<br>
             <input type="checkbox" name="attributes" value="h.web" {% if 'h.web' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Web<br>
             <input type="checkbox" name="attributes" value="b.total_population" {% if 'b.total_population' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Einwohner<br>
+            <input type="checkbox" name="attributes" value="m.mieten_ab_2019" {% if 'm.mieten_ab_2019' in parameters.attributes %}checked{% endif %} onchange="submitForm()"> Mieten<br>
         </div>
 
         <input type="hidden" name="generate_map" id="generate_map" value="">
 
     </form>
+
+    
+
+
     <div id="map">
-        {{ map|safe }}
+        {{ map |safe }}
     </div>
+    
     {{ table | safe }}
+
 
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>

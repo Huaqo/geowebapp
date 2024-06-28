@@ -2,37 +2,15 @@ from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from tabulate import tabulate
 from sqlalchemy import text
-from geopy.geocoders import Nominatim
-from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
+from queries import DATASET, DATASET_GROUPED
+import folium
 import os
-import re
+from decimal import Decimal
+
+
 # import matplotlib
 # matplotlib.use('Agg')
 # import matplotlib.pyplot as plt
-from io import BytesIO
-import base64
-import time
-import folium
-
-## QUERIES
-
-DATASET = """
-SELECT {attributes}
-FROM Hochschulen h
-JOIN Bevoelkerung b ON b.region_name = h.ort 
-AND b.bundesland = h.land 
-AND (
-    b.region_type = 'kreis' 
-    OR b.region_name = 'Berlin' 
-    OR b.region_name = 'Hamburg' 
-    OR b.region_name = 'Bremen' 
-    OR b.region_name = 'Hannover' AND b.region_type = 'landeshauptstadt' 
-    OR b.region_name = 'Saarbrücken' AND b.region_type = 'landeshauptstadt')
-AND {search_attr} ILIKE :search
-ORDER BY {sort_by} {order}
-LIMIT {limit};
-"""
-
 
 ## INIT
 
@@ -54,7 +32,7 @@ app = create_app()
 ## DATA QUERY 
 
 class Dataset_Parameters:
-    def __init__(self, order='ASC', limit='10', sort_by='gjahr', attributes=['name_h'], search='', search_attr='name_h'):
+    def __init__(self, order='ASC', limit='10', sort_by='gjahr', attributes=['name_h'], search='', search_attr='name_h', group_by='typ'):
         if attributes is None:
             attributes = ['name_h']
         self.order = order
@@ -63,6 +41,7 @@ class Dataset_Parameters:
         self.attributes = attributes
         self.search = search
         self.search_attr = search_attr
+        self.group_by = group_by
     
     def update(self, **kwargs):
         for key, value in kwargs.items():
@@ -78,7 +57,8 @@ class Dataset_Parameters:
             sort_by=request.args.get('sort_by', parameters.sort_by),
             attributes=request.args.getlist('attributes') or parameters.attributes,
             search=request.args.get('search', parameters.search),
-            search_attr=request.args.get('search_attr', parameters.search_attr)
+            search_attr=request.args.get('search_attr', parameters.search_attr),
+            group_by=request.args.get('group_by', parameters.group_by)
         )
         parameters.attributes = [attr for attr in parameters.attributes if attr]
         if 'lat' not in parameters.attributes:
@@ -92,7 +72,7 @@ def get_data(query_template, parameters):
     for key, value in params_dict.items():
         if isinstance(value, list):
             params_dict[key] = ', '.join(value)
-    query = query_template.format(**params_dict)  
+    query = query_template.format(**params_dict)
     result = db.session.execute(text(query), {'search': f"%{params_dict.get('search', '')}%"})
     print("Final query:", query)
     print("Search parameter:", f"%{parameters.search}%")
@@ -102,16 +82,28 @@ def get_data(query_template, parameters):
 ## TABLE
 
 def create_table(data, parameters):
-    table_data = [list(row) for row in data]
-    table = tabulate(table_data, headers=parameters.attributes, tablefmt='html')
+    lat_index = parameters.attributes.index('lat') if 'lat' in parameters.attributes else -1
+    lon_index = parameters.attributes.index('lon') if 'lon' in parameters.attributes else -1
+
+    filtered_data = []
+    for row in data:
+        filtered_row = [value for i, value in enumerate(row) if i not in [lat_index, lon_index]]
+        filtered_data.append(filtered_row)
+
+    filtered_attributes = [attr for attr in parameters.attributes if attr not in ['lat', 'lon']]
+    table = tabulate(filtered_data, headers=filtered_attributes, tablefmt='html')
+    return table
+
+def create_grouped_table(data, group_by):
+    headers = [group_by, 'Anzahl']
+    table = tabulate(data, headers=headers, tablefmt='html')
     return table
 
 ## MAP
     
 def generate_map(data, column_names):
-    geolocator = Nominatim(user_agent="geoapiExercises")
     map_center = [51.1657, 10.4515]
-    map = folium.Map(location=map_center, zoom_start=6)
+    map = folium.Map(location=map_center, tiles="cartodb positron", zoom_start=6)
     
     try:
         lat_index = column_names.index('lat')
@@ -119,15 +111,25 @@ def generate_map(data, column_names):
     except ValueError:
         print("Lat or Lon column not found in the result set")
         return None
-
+    
+    bounds = []
     for row in data:
         lat = row[lat_index]
         lon = row[lon_index]
+        if isinstance(lat, Decimal):
+            lat = float(lat)
+        if isinstance(lon, Decimal):
+            lon = float(lon)
         if lat is not None and lon is not None:
             folium.Marker([lat, lon], popup=f"Data: {row}").add_to(map)
+            bounds.append([lat, lon])
+
+    if bounds:
+        map.fit_bounds(bounds)  # Fit the map to the bounds of the markers
 
     map_html = map._repr_html_()
     return map_html
+
 
 
 ## VIEWS
@@ -136,14 +138,11 @@ def generate_map(data, column_names):
 def home():
     dataset_parameters = Dataset_Parameters.get_parameters(request)
     dataset = get_data(DATASET, dataset_parameters)
+    dataset_grouped = get_data(DATASET_GROUPED, dataset_parameters)
     table = create_table(dataset, dataset_parameters)
-    
-    generate_map_flag = request.args.get('generate_map')
-    map = None
-    if generate_map_flag == "true":
-        column_names = dataset_parameters.attributes
-        map = generate_map(dataset, column_names)
-    return render_template('index.html', table=table, parameters=dataset_parameters, map=map)
+    table_grouped = create_grouped_table(dataset_grouped, dataset_parameters.group_by)
+    map = generate_map(dataset, dataset_parameters.attributes)
+    return render_template('index.html', table=table, table_grouped=table_grouped, parameters=dataset_parameters, map=map)
 
 if __name__ == '__main__':
     with app.app_context():

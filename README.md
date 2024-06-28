@@ -35,22 +35,77 @@ psql -h localhost -p 5432 -U <username> -d postgres
 \c geowebapp
 ```
 
-4. create_hochschulen_and_bevoelkerung.sql
+4. Create tables
 
 ```sql
-\i /path/to/geowebapp/sql/create_hochschulen_and_bevoelkerung.sql
+-- Create a staging table for loading CSV data
+CREATE TABLE Bevoelkerung (
+    region_code VARCHAR(10) PRIMARY KEY,
+    region_name VARCHAR(50),
+    total_population INT,
+    male_population INT,
+    female_population INT,
+    region_type VARCHAR(20),
+    bundesland VARCHAR(50)
+);
+
+-- Create the Hochschulen table
+CREATE TABLE Hochschulen (
+    namekurz_h VARCHAR(50),
+    name_h VARCHAR(255) PRIMARY KEY,
+    typ VARCHAR(100),
+    traeger VARCHAR(100),
+    land VARCHAR(50),
+    studenten INT,
+    gjahr INT,
+    precht VARCHAR(10),
+    hrecht VARCHAR(10),
+    str VARCHAR(255),
+    plz INT,
+    ort VARCHAR(100),
+    web VARCHAR(255),
+    lat DECIMAL(18, 10),
+    lon DECIMAL(18, 10)
+);
+
+-- Mieten
+CREATE TABLE Mieten (
+    land VARCHAR(50) PRIMARY KEY,
+    mieten_ab_2019 DECIMAL(4,1),
+    mieten_insgesamt DECIMAL(4,1)
+);
 ```
 
-5. create_hochschulen_join_bevoelkerung.sql
+5. Insert data
 
 ```sql
-\i /path/to/geowebapp/sql/create_hochschulen_join_bevoelkerung.sql
+-- Copy data into Bevoelkerung staging table
+COPY public.Bevoelkerung (region_code, region_name, total_population, male_population, female_population, region_type, bundesland)
+FROM '/Users/huaqo/Developer/geowebapp/data/preprocessed/cleaned_bevoelkerung.csv'
+DELIMITER ','
+CSV HEADER;
+
+-- Copy data into Hochschulen table
+COPY public.Hochschulen (namekurz_h, name_h, typ, traeger, land, studenten, gjahr, precht, hrecht, str, plz, ort, web, lat, lon)
+FROM '/Users/huaqo/Developer/geowebapp/data/preprocessed/cleaned_hochschulen.csv'
+DELIMITER ','
+CSV HEADER;
+
+-- Copy data into Mieten table
+COPY public.Mieten (land, mieten_ab_2019, mieten_insgesamt)
+FROM '/Users/huaqo/Developer/geowebapp/data/preprocessed/cleaned_mieten.csv'
+DELIMITER ','
+CSV HEADER;
 ```
 
 6. Check 
 
 ```sql
 \dt
+```
+
+```sql
+SELECT * FROM your_table_name LIMIT 5;
 ```
 
 # Install requirements
