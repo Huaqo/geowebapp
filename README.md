@@ -6,7 +6,11 @@ cd path/to/geowebapp
 
 ```bash
 python3 data/preprocess_bevoelkerung.py
+```
+```bash
 python3 data/preprocess_hochschulen.py # Nur wenn nötig, dauert sehr lange wegen Koordinaten
+```
+```bash
 python3 data/preprocess_mieten.py
 ```
 
