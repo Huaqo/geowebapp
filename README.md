@@ -126,7 +126,7 @@ SELECT * FROM your_table_name LIMIT 5;
 pip install -r requirements.txt
 ```
 
-# Change server path in app/config.py
+# Change server path in app.py
 For example
 
 ```python
